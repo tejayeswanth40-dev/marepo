@@ -2,6 +2,27 @@ import pygame
 import sys
 import subprocess
 
+import numpy as np
+
+class BaseGame:
+    def __init__(self, usrname1, usrname2, gameclass):
+        self.player1 = usrname1
+        self.player2 = usrname2
+        self.board = gameclass.generate_board()
+        self.current_turn = 1
+        self.game = gameclass
+        self.winner = 0
+
+    def switch_turn(self):
+        if self.current_turn == 1:
+            self.current_turn = 2
+        else:
+            self.current_turn = 1
+
+# Import game modules after BaseGame is defined to avoid circular imports
+from games import tictactoe
+from games import connect4
+
 pygame.init()
 W, H = 800, 600
 screen = pygame.display.set_mode((W, H))
@@ -90,4 +111,3 @@ while running:
         screen.blit(small_font.render("Connect 4", True, (255,255,255)), (560, 435))
 
     pygame.display.update()
-    

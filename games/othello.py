@@ -1,5 +1,7 @@
 import numpy as np
 import pygame
+from game import BaseGame
+
 class Othello(BaseGame):
     def __init__(self):
         self.board = np.zeros((8, 8), dtype=int)
@@ -17,21 +19,21 @@ class Othello(BaseGame):
         self.blackcoins = 2
         self.whitecoins = 2
     def draw_board(self, board):
-    for x in range(8):
-        for y in range(8):
-            rect = pygame.Rect(x * 50, y * 50, 50, 50)
-            pygame.draw.rect(self.screen, (0, 128, 0), rect)
-            if board[y][x] == 1:
-                pygame.draw.circle(self.screen, (0, 0, 0), rect.center, 20)
-            elif board[y][x] == 2:
-                pygame.draw.circle(self.screen, (255, 255, 255), rect.center, 20)
+        for x in range(8):
+            for y in range(8):
+                rect = pygame.Rect(x * 50, y * 50, 50, 50)
+                pygame.draw.rect(self.screen, (0, 128, 0), rect)
+                if board[y][x] == 1:
+                    pygame.draw.circle(self.screen, (0, 0, 0), rect.center, 20)
+                elif board[y][x] == 2:
+                    pygame.draw.circle(self.screen, (255, 255, 255), rect.center, 20)
 
     def is_valid_move(self, board, x, y, player):
-    if board[y][x] != 0:
-        return False
-    opponent = 3 - player
-    coin_to_place = player
-    other_coin = opponent
+        if board[y][x] != 0:
+            return False
+        opponent = 3 - player
+        coin_to_place = player
+        other_coin = opponent
     
 
         
