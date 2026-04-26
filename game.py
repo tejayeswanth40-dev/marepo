@@ -1,8 +1,7 @@
 import pygame
+import numpy as np
 import sys
 import subprocess
-
-import numpy as np
 
 class BaseGame:
     def __init__(self, usrname1, usrname2, gameclass):
@@ -11,7 +10,7 @@ class BaseGame:
         self.board = gameclass.generate_board()
         self.current_turn = 1
         self.game = gameclass
-        self.winner = 0
+        self.winner = None
 
     def switch_turn(self):
         if self.current_turn == 1:
@@ -22,6 +21,7 @@ class BaseGame:
 # Import game modules after BaseGame is defined to avoid circular imports
 from games import tictactoe
 from games import connect4
+from games import othello
 
 pygame.init()
 W, H = 800, 600
@@ -62,7 +62,7 @@ def draw_button(text, x, y, w, h):
     screen.blit(label, (x + 10, y + 10))
     return rect
 
-enter_btn = pygame.Rect(0, 0, 0, 0)
+enter_btn = pygame.Rect(0,0,0,0)
 game1_rect = pygame.Rect(0,0,0,0)
 game2_rect = pygame.Rect(0,0,0,0)
 game3_rect = pygame.Rect(0,0,0,0)
@@ -77,6 +77,7 @@ while running:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my =pygame.mouse.get_pos()
             if current_screen == HOME:
@@ -85,19 +86,21 @@ while running:
             elif current_screen == MENU:
                 if game1_rect.collidepoint(mx, my):
                     pygame.draw.rect(screen, (255, 255, 0), game1_rect, 3)
-                    subprocess.run(["python3", "games/tictactoe.py"])
+                    tictactoe.play()    
                 elif game2_rect.collidepoint(mx, my):
                     pygame.draw.rect(screen, (255, 255, 0), game2_rect, 3)
-                    subprocess.run(["python3", "games/othello.py"])
+                    othello.play()
                 elif game3_rect.collidepoint(mx, my):
                     pygame.draw.rect(screen, (255, 255, 0), game3_rect, 3)
-                    subprocess.run(["python3", "games/connect4.py"])
+                    connect4.play()
 
     if current_screen == HOME:
         screen.blit(bg_home, (0, 0))
         title = title_font.render("Game Hub", True, (255, 255, 255))
         screen.blit(title, (W//2 - title.get_width()//2, 100))
         enter_btn = draw_button("Enter into Hub", W//2 - 95, 300, 200, 50)
+        if enter_btn.collidepoint(pygame.mouse.get_pos()):
+            pygame.draw.rect(screen, (255, 255, 0), enter_btn, 3)
 
     elif current_screen == MENU:
         screen.blit(bg_menu, (0, 0))

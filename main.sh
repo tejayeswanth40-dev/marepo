@@ -29,7 +29,8 @@ while true; do
                 echo
                 if [ "$pass1" != "$pass1_confirm" ]; then
                     echo "Passwords do not match.Please enter the password again."
-                    read -p "'x' to terminate the session and any other character to enter password again: " choice4
+                    echo -e "'x' to terminate the session and \nany other character to enter password again: "
+                    read choice4
                     if [ "$choice4" == "x" ]; then
                         exit 1 # Terminate
                     else
@@ -38,12 +39,13 @@ while true; do
                 fi
                 hashpass1=$(echo -n "$pass1" | sha256sum | awk '{print $1}')
                 if pass_check "$usrname1" "$hashpass1"; then
-                    echo "Player 1 logged in successfully."
+                    echo -e "Player 1 logged in successfully.\n---------------------------------"
                     login1=true
                     break # Login successful for player 1
                 else
                     echo "Incorrect password for Player 1, please enter the password again."
-                    read -p "'x' to terminate the session and any other character to enter password again: " choice0
+                    echo -e "'x' to terminate the session or \nany other character to enter password again: "
+                    read choice0
                     if [ "$choice0" == "x" ]; then
                         exit 1 #Terminate
                     else
@@ -52,8 +54,9 @@ while true; do
                 fi
             done # Login loop for player 1 ENDS
         else
-            echo "Username not found for Player 1, Would you like to register or enter username again."
-            read -p "Enter 'r' to register and 'x' to terminate session or any other character to enter username again: " choice1
+            echo -e "Username not found for Player 1\n\nWould you like to register or enter username again."
+            echo -e "Enter 'r' to register and\n'x' to terminate session \nor \nany other character to enter username again: "
+            read choice1
                 # REGISTERATION FOR PLAYER 1
             if [ "$choice1" == "r" ]; then
                 while true; do
@@ -68,7 +71,8 @@ while true; do
                         echo
                         if [ "$pass1" != "$pass1_confirm" ]; then
                             echo "Passwords do not match. Please enter the new password again."
-                            read -p "'x' to terminate the session and any other character to enter password again: " choice5
+                            echo -e "'x' to terminate the session and \nany other character to enter password again: "
+                            read choice5
                             if [ "$choice5" == "x" ]; then
                                 exit 1 # Terminate
                             else
@@ -77,7 +81,7 @@ while true; do
                         fi
                         hashpass1=$(echo -n "$pass1" | sha256sum | awk '{print $1}')
                         echo -e "$usrname1\t$hashpass1" >> users.tsv
-                        echo "Player 1 registered successfully."
+                        echo -e "Player 1 registered successfully.\n---------------------------------"
                         login1=true
                         break # Registered successfully for player 1
                     fi
@@ -103,7 +107,8 @@ while true; do
                 echo
                 if [ "$pass2" != "$pass2_confirm" ]; then
                     echo "Passwords do not match. Please enter the password again."
-                    read -p "'x' to terminate the session and any other character to enter password again: " choice6
+                    echo -e "'x' to terminate the session and \nany other character to enter password again: "
+                    read choice6
                     if [ "$choice6" == "x" ]; then
                         exit 1 # Terminate
                     else
@@ -117,7 +122,8 @@ while true; do
                     break # Login successful for player 2
                 else
                     echo "Incorrect password for Player 2, please enter password again."
-                    read -p "'x' to terminate the session and any other character to enter password again: " choice3
+                    echo -e "'x' to terminate the session or \nany other character to enter password again: "
+                    read choice3
                     if [ "$choice3" == "x" ]; then
                         exit 1 # Terminate
                     else
@@ -126,8 +132,9 @@ while true; do
                 fi
             done
         else
-            echo "Username not found for Player 2 or username same as Player 1, Would you like to register or enter username again."
-            read -p "Enter 'r' to register and 'x' to terminate the session or any other character to enter username again: " choice2
+            echo -e "Username not found for Player 2 or username same as Player 1\n\nWould you like to register or enter username again."
+            echo -e "Enter 'r' to register and\n'x' to terminate the session \nor \nany other character to enter username again: "
+            read choice2
                     # REGISTERATION FOR PLAYER 2
             if [ "$choice2" == "r" ]; then
                 while true; do
@@ -142,7 +149,8 @@ while true; do
                         echo
                         if [ "$pass2" != "$pass2_confirm" ]; then
                             echo "Passwords do not match. Please enter the new password again."
-                            read -p "'x' to terminate the session and any other character to enter password again: " choice7
+                            echo -e "'x' to terminate the session and \nany other character to enter password again: "
+                            read choice7
                             if [ "$choice7" == "x" ]; then
                                 exit 1 # Terminate
                             else

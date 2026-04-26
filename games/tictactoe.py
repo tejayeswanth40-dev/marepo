@@ -1,5 +1,6 @@
 from game import BaseGame
 import numpy as np
+import pygame
 
 class T3(BaseGame):
     def __init__(self, usrname1, usrname2):
@@ -49,4 +50,4 @@ class T3(BaseGame):
             elif '22222' in diag2:
                 return 2
         return 0
-    
+    def play(self):

@@ -15,3 +15,4 @@ class Connect4(BaseGame):
                 if self.board[row, col] == 0:
                     self.board[row, col] = turn
                     return True
+    
