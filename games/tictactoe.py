@@ -50,4 +50,3 @@ class T3(BaseGame):
             elif '22222' in diag2:
                 return 2
         return 0
-    def play(self):

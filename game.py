@@ -85,13 +85,13 @@ while running:
                     current_screen = MENU
             elif current_screen == MENU:
                 if game1_rect.collidepoint(mx, my):
-                    pygame.draw.rect(screen, (255, 255, 0), game1_rect, 3)
+                    pygame.draw.rect(screen, (10, 0, 10), game1_rect, 3)
                     tictactoe.play()    
                 elif game2_rect.collidepoint(mx, my):
-                    pygame.draw.rect(screen, (255, 255, 0), game2_rect, 3)
+                    pygame.draw.rect(screen, (10, 0, 10), game2_rect, 3)
                     othello.play()
                 elif game3_rect.collidepoint(mx, my):
-                    pygame.draw.rect(screen, (255, 255, 0), game3_rect, 3)
+                    pygame.draw.rect(screen, (10, 0, 10), game3_rect, 3)
                     connect4.play()
 
     if current_screen == HOME:
@@ -100,7 +100,7 @@ while running:
         screen.blit(title, (W//2 - title.get_width()//2, 100))
         enter_btn = draw_button("Enter into Hub", W//2 - 95, 300, 200, 50)
         if enter_btn.collidepoint(pygame.mouse.get_pos()):
-            pygame.draw.rect(screen, (255, 255, 0), enter_btn, 3)
+            pygame.draw.rect(screen, (10, 0, 10), enter_btn, 2)
 
     elif current_screen == MENU:
         screen.blit(bg_menu, (0, 0))
@@ -114,3 +114,6 @@ while running:
         screen.blit(small_font.render("Connect 4", True, (255,255,255)), (560, 435))
 
     pygame.display.update()
+
+    
+
