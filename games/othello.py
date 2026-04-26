@@ -1,6 +1,6 @@
 import numpy as np
 import pygame
-from game import BaseGame
+from base import BaseGame
 
 class othello(BaseGame):
     def __init__(self):
