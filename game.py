@@ -3,22 +3,7 @@ import numpy as np
 import sys
 import subprocess
 
-class BaseGame:
-    def __init__(self, usrname1, usrname2, gameclass):
-        self.player1 = usrname1
-        self.player2 = usrname2
-        self.board = gameclass.generate_board()
-        self.current_turn = 1
-        self.game = gameclass
-        self.winner = None
-
-    def switch_turn(self):
-        if self.current_turn == 1:
-            self.current_turn = 2
-        else:
-            self.current_turn = 1
-
-# Import game modules after BaseGame is defined to avoid circular imports
+from base import BaseGame
 from games import tictactoe
 from games import connect4
 from games import othello
@@ -85,8 +70,10 @@ while running:
                     current_screen = MENU
             elif current_screen == MENU:
                 if game1_rect.collidepoint(mx, my):
-                    pygame.draw.rect(screen, (10, 0, 10), game1_rect, 3)
-                    tictactoe.play()    
+                    gameT = tictactoe.T3("Player 1", "Player 2")
+                    pygame.draw.rect(screen, (255, 255, 0), game1_rect, 3)
+                    gameT.play()
+                    print(gameT.winner)
                 elif game2_rect.collidepoint(mx, my):
                     pygame.draw.rect(screen, (10, 0, 10), game2_rect, 3)
                     othello.play()
@@ -95,6 +82,7 @@ while running:
                     connect4.play()
 
     if current_screen == HOME:
+        
         screen.blit(bg_home, (0, 0))
         title = title_font.render("Game Hub", True, (255, 255, 255))
         screen.blit(title, (W//2 - title.get_width()//2, 100))
@@ -103,6 +91,7 @@ while running:
             pygame.draw.rect(screen, (10, 0, 10), enter_btn, 2)
 
     elif current_screen == MENU:
+        
         screen.blit(bg_menu, (0, 0))
         title = title_font.render("Play your Games", True, (255, 255, 255))
         screen.blit(title, (W//2 - title.get_width()//2, 70))
@@ -114,6 +103,3 @@ while running:
         screen.blit(small_font.render("Connect 4", True, (255,255,255)), (560, 435))
 
     pygame.display.update()
-
-    
-

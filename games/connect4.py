@@ -1,4 +1,4 @@
-from game import BaseGame
+from base import BaseGame
 import numpy as np
 
 class Connect4(BaseGame):

@@ -1,15 +1,26 @@
-from game import BaseGame
+from base import BaseGame
 import numpy as np
 import pygame
 
 class T3(BaseGame):
     def __init__(self, usrname1, usrname2):
         super().__init__(usrname1, usrname2, T3)
+        self.W1 = 0
+        self.H1 = 0
+        self.winner = None
+    def initialize_board(self):
+        pygame.display.set_caption("Tic Tac Toe")
+        self.screen1 = pygame.display.set_mode((400, 400))
+        for x in range(10):
+            for y in range(10):
+                rect = pygame.Rect(x * 40 + self.W1, y * 40 + self.H1, 40, 40)
+                pygame.draw.rect(self.screen1, (0, 0, 0), rect, 1)
 
-    def generate_board(self):
+    @staticmethod
+    def generate_board():
         return np.zeros((10,10), dtype=int)
 
-    def if_valid_then_move(self, row, col, turn):
+    def if_valid_then_update(self, row, col, turn):
         if self.board[row, col] != 0:
             return False
         else:
@@ -40,7 +51,7 @@ class T3(BaseGame):
         if len(diag1) >=5:
             if '11111' in diag1:
                 return 1
-            elif '22222' in diag2:
+            elif '22222' in diag1:
                 return 2
         #diagonal(y+x) gives the diag wherever y+x is constant, it is diagonal(offset, axis1, axis2)
         diag2 = ''.join(map(str, self.board[:,::-1].diagonal(y+x)))
@@ -50,3 +61,48 @@ class T3(BaseGame):
             elif '22222' in diag2:
                 return 2
         return 0
+    def draw_x(self, surface, color, center_x, center_y, size, thickness):
+    #Draws an X-shaped cross centered at (center_x, center_y)
+
+    # Top-left to bottom-right line
+        pygame.draw.line(surface, color, 
+                     (center_x - size//2, center_y - size//2), 
+                     (center_x + size//2, center_y + size//2), thickness)
+    
+    # Top-right to bottom-left line
+        pygame.draw.line(surface, color, 
+                     (center_x + size//2, center_y - size//2), 
+                     (center_x - size//2, center_y + size//2), thickness)
+
+    def draw_board(self):
+        for x in range(10):
+            for y in range(10):
+                rect = pygame.Rect(x * 40 + self.W1, y * 40 + self.H1, 40, 40)
+                pygame.draw.rect(self.screen1, (0, 0, 0), rect, 1)
+                if self.board[x, y] == 1:
+                    self.draw_x(self.screen1, (0, 0, 0), rect.centerx + self.W1, rect.centery + self.H1, 30, 5)
+                elif self.board[x, y] == 2:
+                    pygame.draw.circle(self.screen1, (255, 0, 0), rect.center, 15, 5)
+    def play(self):
+        pygame.init()
+        self.initialize_board()
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    return
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mx, my = pygame.mouse.get_pos()
+                    col, row = (my - self.H1) // 40, (mx - self.W1) // 40
+                    if self.if_valid_then_update(row, col, self.current_turn):
+                        self.last_pos = (row, col)
+                        winner = self.check_win()
+                        if winner:
+                            self.winner = winner
+                            print(f"Player {winner} wins!")
+                            pygame.display.set_caption("Game Hub")
+                            screen1=pygame.display.set_mode((800, 600))
+                            return
+            self.screen1.fill((255 , 255 , 255 ))
+            self.draw_board()
+            pygame.display.update()
