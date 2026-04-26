@@ -73,13 +73,15 @@ while running:
                     gameT = tictactoe.T3("Player 1", "Player 2")
                     pygame.draw.rect(screen, (255, 255, 0), game1_rect, 3)
                     gameT.play()
-                    print(gameT.winner)
+                    #print(gameT.winner)
                 elif game2_rect.collidepoint(mx, my):
                     pygame.draw.rect(screen, (255, 255, 0), game2_rect, 3)
                     othello.play()
                 elif game3_rect.collidepoint(mx, my):
+                    gameC = connect4.C4("Player 1", "Player 2")
                     pygame.draw.rect(screen, (255, 255, 0), game3_rect, 3)
-                    connect4.play()
+                    gameC.play()
+                    #print(gameC.winner)
 
     if current_screen == HOME:
         

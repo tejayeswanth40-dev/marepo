@@ -5,15 +5,16 @@ import pygame
 class T3(BaseGame):
     def __init__(self, usrname1, usrname2):
         super().__init__(usrname1, usrname2, T3)
-        self.W1 = 0
-        self.H1 = 0
+        self.W1 = 200
+        self.H1 = 200
+        self.side_length = 40
         self.winner = None
     def initialize_board(self):
         pygame.display.set_caption("Tic Tac Toe")
-        self.screen1 = pygame.display.set_mode((400, 400))
+        self.screen1 = pygame.display.set_mode((800, 800))
         for x in range(10):
             for y in range(10):
-                rect = pygame.Rect(x * 40 + self.W1, y * 40 + self.H1, 40, 40)
+                rect = pygame.Rect(x * self.side_length + self.W1, y * self.side_length + self.H1, self.side_length, self.side_length)
                 pygame.draw.rect(self.screen1, (0, 0, 0), rect, 1)
 
     @staticmethod
@@ -77,10 +78,10 @@ class T3(BaseGame):
     def draw_board(self):
         for x in range(10):
             for y in range(10):
-                rect = pygame.Rect(x * 40 + self.W1, y * 40 + self.H1, 40, 40)
+                rect = pygame.Rect(x * self.side_length + self.W1, y * self.side_length + self.H1, self.side_length, self.side_length)
                 pygame.draw.rect(self.screen1, (0, 0, 0), rect, 1)
                 if self.board[x, y] == 1:
-                    self.draw_x(self.screen1, (0, 0, 0), rect.centerx + self.W1, rect.centery + self.H1, 30, 5)
+                    self.draw_x(self.screen1, (0, 0, 0), rect.centerx , rect.centery, 30, 5)
                 elif self.board[x, y] == 2:
                     pygame.draw.circle(self.screen1, (255, 0, 0), rect.center, 15, 5)
     def play(self):
@@ -93,7 +94,7 @@ class T3(BaseGame):
                     return
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mx, my = pygame.mouse.get_pos()
-                    col, row = (my - self.H1) // 40, (mx - self.W1) // 40
+                    col, row = (my - self.H1) // self.side_length, (mx - self.W1) // self.side_length
                     if self.if_valid_then_update(row, col, self.current_turn):
                         self.last_pos = (row, col)
                         winner = self.check_win()
