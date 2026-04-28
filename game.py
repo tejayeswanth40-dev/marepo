@@ -2,6 +2,8 @@ import pygame
 import numpy as np
 import sys
 import subprocess
+import csv
+from datetime import datetime as dt
 
 from base import BaseGame
 from games import tictactoe
@@ -40,6 +42,14 @@ MENU = 1
 
 current_screen = HOME
 
+def append_results(game_cap, game):
+    with open('history.csv', 'a', newline='') as file:
+        writer = csv.writer(file)
+        if (game_cap.winner == 1) | (game_cap.winner == "Player 1 Wins!"):
+            writer.writerow([sys.argv[1],sys.argv[2],dt.now().strftime("%d-%m-%Y"),game])
+        elif (game_cap.winner == 2) | (game_cap.winner == "Player 2 Wins!"):
+            writer.writerow([sys.argv[2],sys.argv[1],dt.now().strftime("%d-%m-%Y"),game])
+
 def draw_button(text, x, y, w, h):
     rect= pygame.Rect(x, y, w, h)
     pygame.draw.rect(screen, (200, 200, 200), rect)
@@ -51,7 +61,6 @@ enter_btn = pygame.Rect(0,0,0,0)
 game1_rect = pygame.Rect(0,0,0,0)
 game2_rect = pygame.Rect(0,0,0,0)
 game3_rect = pygame.Rect(0,0,0,0)
-
 
 clock = pygame.time.Clock()
 running = True
@@ -71,16 +80,19 @@ while running:
             elif current_screen == MENU:
                 if game1_rect.collidepoint(mx, my):
                     gameT = tictactoe.T3("Player 1", "Player 2")
-                    pygame.draw.rect(screen, (10, 0, 10), game1_rect, 3)
+                    pygame.draw.rect(screen, (255, 255, 0), game1_rect, 3)
                     gameT.play()
-                    print(gameT.winner)
+                    append_results(gameT, "Tic Tac Toe")
                 elif game2_rect.collidepoint(mx, my):
-                    gameO  = othello.O2("Player 1", "Player 2")
-                    pygame.draw.rect(screen, (10, 0, 10), game2_rect, 3)
+                    gameO = othello.O2("Player 1", "Player 2")
+                    pygame.draw.rect(screen, (255, 255, 0), game2_rect, 3)
                     gameO.play()
+                    append_results(gameO, "Othello")
                 elif game3_rect.collidepoint(mx, my):
-                    pygame.draw.rect(screen, (10, 0, 10), game3_rect, 3)
-                    connect4.play()
+                    gameC = connect4.C4("Player 1", "Player 2")
+                    pygame.draw.rect(screen, (255, 255, 0), game3_rect, 3)
+                    gameC.play()
+                    append_results(gameC, "Connect 4")
 
     if current_screen == HOME:
         
@@ -89,7 +101,7 @@ while running:
         screen.blit(title, (W//2 - title.get_width()//2, 100))
         enter_btn = draw_button("Enter into Hub", W//2 - 95, 300, 200, 50)
         if enter_btn.collidepoint(pygame.mouse.get_pos()):
-            pygame.draw.rect(screen, (10, 0, 10), enter_btn, 2)
+            pygame.draw.rect(screen, (255, 255, 0), enter_btn, 3)
 
     elif current_screen == MENU:
         
@@ -104,3 +116,4 @@ while running:
         screen.blit(small_font.render("Connect 4", True, (255,255,255)), (560, 435))
 
     pygame.display.update()
+
