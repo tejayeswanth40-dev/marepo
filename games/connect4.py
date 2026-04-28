@@ -84,12 +84,13 @@ class C4(BaseGame):
                     return
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mx, my = pygame.mouse.get_pos()
-                    col = (mx - self.W3) // self.side_length
-                    if self.if_valid_then_update(col, self.current_turn):
-                        count = np.sum(self.board[:,col] == 1)
-                        row = count - 1
-                        self.last_pos = (row, col)
-                        winner = self.check_win(col)
+                    c = (mx - self.W3) // self.side_length
+                    if self.if_valid_then_update(c, self.current_turn):
+                        count = np.sum((self.board[:,c] == 1) | (self.board[:,c] == 2))
+                        #since if_valid_then_update updates the board, count gives the number of pieces in that column after placing the piece, so the row_index of the piece placed is 6 - count.
+                        r = 6 - count
+                        self.last_pos = (r, c)
+                        winner = self.check_win(c)
                         if winner:
                             self.winner = winner
                             print(f"Player {winner} wins!")
