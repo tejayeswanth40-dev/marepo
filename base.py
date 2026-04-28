@@ -7,5 +7,5 @@ class BaseGame:
         self.game = gameclass
         self.winner = None
 
-    def switch_turn(self):
-        self.current_turn = 3 - self.current_turn
+        def switch_turn(self):
+            self.current_turn = 3 - self.current_turn

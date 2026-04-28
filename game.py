@@ -51,7 +51,7 @@ enter_btn = pygame.Rect(0,0,0,0)
 game1_rect = pygame.Rect(0,0,0,0)
 game2_rect = pygame.Rect(0,0,0,0)
 game3_rect = pygame.Rect(0,0,0,0)
-screen.fill((0, 0, 0))
+
 
 clock = pygame.time.Clock()
 running = True
@@ -71,12 +71,13 @@ while running:
             elif current_screen == MENU:
                 if game1_rect.collidepoint(mx, my):
                     gameT = tictactoe.T3("Player 1", "Player 2")
-                    pygame.draw.rect(screen, (255, 255, 0), game1_rect, 3)
+                    pygame.draw.rect(screen, (10, 0, 10), game1_rect, 3)
                     gameT.play()
                     print(gameT.winner)
                 elif game2_rect.collidepoint(mx, my):
+                    gameO  = othello.O2("Player 1", "Player 2")
                     pygame.draw.rect(screen, (10, 0, 10), game2_rect, 3)
-                    othello.play()
+                    gameO.play()
                 elif game3_rect.collidepoint(mx, my):
                     pygame.draw.rect(screen, (10, 0, 10), game3_rect, 3)
                     connect4.play()
