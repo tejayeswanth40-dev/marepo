@@ -45,9 +45,9 @@ current_screen = HOME
 def append_results(game_cap, game):
     with open('history.csv', 'a', newline='') as file:
         writer = csv.writer(file)
-        if (game_cap.winner == 1) | (game_cap.winner == "Player 1 Wins!"):
+        if (game_cap.winner == 1):
             writer.writerow([sys.argv[1],sys.argv[2],dt.now().strftime("%d-%m-%Y"),game])
-        elif (game_cap.winner == 2) | (game_cap.winner == "Player 2 Wins!"):
+        elif (game_cap.winner == 2):
             writer.writerow([sys.argv[2],sys.argv[1],dt.now().strftime("%d-%m-%Y"),game])
 
 def draw_button(text, x, y, w, h):

@@ -5,13 +5,16 @@ import pygame
 class T3(BaseGame):
     def __init__(self, usrname1, usrname2):
         super().__init__(usrname1, usrname2, T3)
-        self.W1 = 200
-        self.H1 = 200
-        self.side_length = 40
+        self.side_length = 50
+    # W1 is width of the leftmost vertical line from the left edge of the window
+        self.W1 = (800 - 10 * self.side_length) // 2
+    # H1 is height of the topmost horizontal line from the top edge of the window
+        self.H1 = (800 - 10 * self.side_length) // 2
         self.winner = None
     def initialize_board(self):
         pygame.display.set_caption("Tic Tac Toe")
         self.screen1 = pygame.display.set_mode((800, 800))
+    #Draw the grid lines for the 10x10 board
         for x in range(10):
             for y in range(10):
                 rect = pygame.Rect(x * self.side_length + self.W1, y * self.side_length + self.H1, self.side_length, self.side_length)
@@ -22,17 +25,13 @@ class T3(BaseGame):
         return np.zeros((10,10), dtype=int)
 
     def if_valid_then_update(self, row, col, turn):
-        if self.board[row, col] != 0:
+        if row < 0 or row >= 10 or col < 0 or col >= 10 or self.board[row, col] != 0:
             return False
         else:
             self.board[row, col] = turn
             self.switch_turn()
             return True
     def check_win(self):
-        if np.all(self.board[0,:] == 1):
-            return 1
-        elif np.all(self.board[0,:] == 2):
-            return 2
         x,y = self.last_pos
         #FOR ROWS
         row = ''.join(map(str, self.board[x,:]))
@@ -54,8 +53,8 @@ class T3(BaseGame):
                 return 1
             elif '22222' in diag1:
                 return 2
-        #diagonal(y+x) gives the diag wherever y+x is constant, it is diagonal(offset, axis1, axis2)
-        diag2 = ''.join(map(str, self.board[:,::-1].diagonal(y+x)))
+        #diagonal(9-y-x) gives the diag wherever y+x is constant, it is diagonal(offset, axis1, axis2)
+        diag2 = ''.join(map(str, self.board[:,::-1].diagonal(9-y-x)))
         if len(diag2) >=5:
             if '11111' in diag2:
                 return 1
@@ -75,19 +74,39 @@ class T3(BaseGame):
                      (center_x + size//2, center_y - size//2), 
                      (center_x - size//2, center_y + size//2), thickness)
 
+    # Draws coins placed and the grid lines
     def draw_board(self):
         for x in range(10):
             for y in range(10):
                 rect = pygame.Rect(x * self.side_length + self.W1, y * self.side_length + self.H1, self.side_length, self.side_length)
                 pygame.draw.rect(self.screen1, (0, 0, 0), rect, 1)
                 if self.board[x, y] == 1:
-                    self.draw_x(self.screen1, (0, 0, 0), rect.centerx , rect.centery, 30, 5)
+                    self.draw_x(self.screen1, (255, 0, 0), rect.centerx , rect.centery, 30, 5)
                 elif self.board[x, y] == 2:
-                    pygame.draw.circle(self.screen1, (255, 0, 0), rect.center, 15, 5)
+                    pygame.draw.circle(self.screen1, (0, 0, 0), rect.center, 18, 5)
+                    
     def play(self):
         pygame.init()
         self.initialize_board()
+        title_font = pygame.font.SysFont("timesnewroman", 48, bold=True)
+        game1_rect = pygame.Rect(0,0,800,800)
+        T3_img = pygame.image.load('games/gamelogos/T3_background.jpg').convert_alpha()
+        T3_img = pygame.transform.smoothscale(T3_img, (800, 800))
+        clock = pygame.time.Clock()
+        clock.tick(60)
         while True:
+
+            # DESIGN VARIABLES START
+            game1_rect = self.screen1.blit(T3_img, (0, 0))
+            title = title_font.render(f"Player {self.current_turn}'s Turn", True, (0, 0, 0))
+            title1 = title_font.render(": Player 1", True, (0, 0, 0))
+            title2 = title_font.render(": Player 2", True, (0, 0, 0))
+            self.screen1.blit(title, (250, 50))
+            board_rect = pygame.Rect(self.W1, self.H1, 10 * self.side_length, 10 * self.side_length)
+            board_rect1 = pygame.Rect(self.W1 + 5.5*self.side_length, self.H1 + 9.5* self.side_length + 50, self.side_length, self.side_length)
+            board_rect2 = pygame.Rect(self.W1 - 0.5*self.side_length, self.H1 + 9.5* self.side_length + 50, self.side_length, self.side_length)
+            # DESIGN VARIABLES END
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -104,6 +123,14 @@ class T3(BaseGame):
                             pygame.display.set_caption("Game Hub")
                             screen1=pygame.display.set_mode((800, 600))
                             return
-            self.screen1.fill((255 , 255 , 255 ))
+                
+                # DESIGN ELEMENTS TO BE UPDATED EVERY FRAME
+            self.screen1.fill((255, 253, 235 ), board_rect1)
+            self.screen1.fill((255, 253, 235 ), board_rect2)
+            self.draw_x(self.screen1, (255, 0, 0), board_rect2.centerx , board_rect2.centery, 30, 5)
+            pygame.draw.circle(self.screen1, (0, 0, 0), (self.W1 + 6*self.side_length, self.H1 + 10*self.side_length + 50), 18, 5)
+            self.screen1.blit(title1, (self.W1 + 0*self.side_length + 30, self.H1 + 10*self.side_length + 22)) 
+            self.screen1.blit(title2, (self.W1 + 6*self.side_length + 30, self.H1 + 10*self.side_length + 22))
+            self.screen1.fill((255, 253, 235 ), board_rect)
             self.draw_board()
             pygame.display.update()
