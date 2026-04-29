@@ -2,11 +2,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 import subprocess
+"""
+This file reads the history.csv file and plots the stats of the players and games played using matplotlib.
+The left plot is a bar graph showing the top 5 players with the most wins and the right plot is a pie chart showing the distribution of games played.
 
-#Bar graph for top 5 players with most wins
+"""
 
 top_players = []
 frequencies = []
+
+#Reads history.csv file and extracts the top 5 player's data.
+#It also extracts the data on games.
+
 with open('history.csv', 'r') as file:
     reader = csv.reader(file)
     player_wins = {}
@@ -34,6 +41,7 @@ with open('history.csv', 'r') as file:
     game_sizes = list(game_counts.values())
     game_sizes_pie = np.array(game_sizes)
 
+    #This subplot represents bar graph regarding the top 5 players.
     plt.subplot(1, 2, 1)
     plt.bar(top_players_x, frequencies_y, color = 'r', label='Top 5 Players with Most Wins')  
     plt.title("Top 5 Players with Most Wins")
@@ -41,6 +49,7 @@ with open('history.csv', 'r') as file:
     plt.ylabel("Number of Wins")
     plt.grid(True, axis='y', linestyle='--', linewidth=0.5)
 
+    #This subplot represents pie chart regarding the games.
     plt.subplot(1, 2, 2)
     plt.pie(game_sizes_pie, labels=game_labels, autopct='%1.1f%%', startangle=140)
     plt.title("Distribution of Games Played")

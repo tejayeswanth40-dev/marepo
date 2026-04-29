@@ -2,6 +2,8 @@ import numpy as np
 import pygame
 from base import BaseGame
 
+#Othello game class which inherits from Basegame class.
+#Contains all the methods and atrributes related to the processing of Othello and it's management.
 class O2(BaseGame):
     def __init__(self, usrname1, usrname2):
         super().__init__(usrname1, usrname2, O2)
@@ -11,12 +13,15 @@ class O2(BaseGame):
         self.player_1_id = self.player1
         self.player_2_id = self.player2
         self.game_over = False
-        self.screen = pygame.display.set_mode((600, 600))
+        self.screen = pygame.display.set_mode((1100, 800))
         self.winner = None        
         self.blackcoins = 2
         self.whitecoins = 2
         self.screen1 = None
+        self.H2 = 140
+        self.W2 = 60
 
+    #generate_board method to create the initial board state for Othello game.
     @staticmethod
     def generate_board():
         board = np.zeros((8, 8), dtype=int)
@@ -26,15 +31,18 @@ class O2(BaseGame):
         board[4 ,4] = 2
         return board
     
+    #draw_initial_screen method to set up the initial game screen with the Othello board and pieces.
     def draw_initial_screen(self):
         only_initial_board = self.generate_board()
-        self.screen1 = pygame.display.set_mode((600, 600))
+        self.screen1 = pygame.display.set_mode((1100, 800))
         pygame.display.set_caption("Othello")
-        self.screen1.fill((0,140,10))
+        green_rect = pygame.Rect(self.W2, self.H2, 600, 600)
+        self.screen1.fill((255,253,208))
+        self.screen1.fill((0,140,10), green_rect)
        
         for x in range(8):
             for y in range(8):
-                rect = pygame.Rect(x*75, y*75, 75, 75)
+                rect = pygame.Rect(x*75 + self.W2, y*75 + self.H2, 75, 75)
                 pygame.draw.rect(self.screen1, (0, 0, 0), rect, 2)
                 
                 if only_initial_board[y, x] == 1:
@@ -44,9 +52,12 @@ class O2(BaseGame):
                     pygame.draw.circle(self.screen1, (255, 255, 255), rect.center, 30)
                     pygame.draw.circle(self.screen1, (0, 0, 0), rect.center, 30, 1)
 
+    #This method checks if a move is valid or not.
+    #It returns the list of all possible directions along which coins can be flipped.
+    #Uses numpy array slicing and indexing to check the rows, columns and diagonals for valid moves and possible flips.
     def is_valid_move(self, board, r, c, player):
-
-        if board[r, c] != 0:
+        #Returns 'f' if the move is invalid or out of index bounds.
+        if r<0 or r>=8 or c<0 or c>=8 or board[r, c] != 0:
             return 'f'
         
         coin_position = (r, c)
@@ -54,12 +65,14 @@ class O2(BaseGame):
         coin_to_place = player
         other_coin = opponent
 
+        #Horizontal row, Vertical column and both diagonals passing through the position (r, c).
         row1 = board[r, :]   
         row1_position = c
         row2 = board[:, c]
         row2_position = r
         diag1 = board.diagonal(c-r) 
-    
+        
+        #Initialising the position of the coin in the diagonal to check for valid moves and possible flips in both diagonals.
         if c-r >= 0:
             diag1_position = r
             idiag1_position = r        
@@ -75,6 +88,7 @@ class O2(BaseGame):
             diag2_position = (7-c)
             idiag2_position = (7-c)
 
+        #Initial empty list to store all possible directions.
         possible_directions = []
         row1_position +=1
         # Check rightside in rows
@@ -169,7 +183,7 @@ class O2(BaseGame):
         else:
             return 'f'
         
-
+    #Returns all possible valid moves for the player in the current board state.
     def valid_moves(self, board, player):
         moves = []
         for x in range(8):
@@ -178,6 +192,9 @@ class O2(BaseGame):
                     moves.append((x, y))
         return moves
 
+    #This method updates the board state after a valid move is made by the player.
+    #It returns the updated board after placing and flipping the coins on the board according to the rules of Othello.
+    #It uses the list of all possible directions returned by the is_valid_move method.
     def updated_board_after_move(self, board, r, c, player):
         temp_board = np.copy(board)
 
@@ -237,11 +254,14 @@ class O2(BaseGame):
 
         return temp_board
 
-    def draw_screen_after_updated_board(self, board):    
-        self.screen1.fill((0,140,10))
+    #draws the screen after updating the board state after a valid move is made by the player using pygame functions.
+    def draw_screen_after_updated_board(self, board):
+        green_rect = pygame.Rect(self.W2, self.H2, 600, 600)   
+        self.screen1.fill((245,245,220)) 
+        self.screen1.fill((0,140,10), green_rect)
         for x in range(8):
             for y in range(8):
-                rect = pygame.Rect(x*75, y*75, 75, 75)
+                rect = pygame.Rect(x*75 + self.W2, y*75 + self.H2, 75, 75)
                 pygame.draw.rect(self.screen1, (0, 0, 0), rect, 2)
                 
                 if board[y, x] == 1:
@@ -251,19 +271,20 @@ class O2(BaseGame):
                     pygame.draw.circle(self.screen1, (255, 255, 255), rect.center, 30)
                     pygame.draw.circle(self.screen1, (0, 0, 0), rect.center, 30, 1)
 
+    #Highlights all possible valid moves for the player.
     def draw_valid_moves_positions(self, board, player):
         possible_valid_moves = self.valid_moves(board, player)
         for r, c in possible_valid_moves:
-            rect = pygame.Rect(c*75, r*75, 75, 75)
-            pygame.draw.circle(self.screen1, (40, 10, 50), rect.center, 28 ,2)
-        
-
+            rect = pygame.Rect(c*75 + self.W2, r*75 + self.H2, 75, 75)
+            pygame.draw.circle(self.screen1, (40, 10, 40), rect.center, 29 ,2)
+    #Counts all the coins of each colour using numpy masking.
     def black_count(self, board):
         return np.sum(board == 1)
     
     def white_count(self, board):
         return np.sum(board == 2)
 
+    #Win Check condition for othello after the game ends.
     def check_the_winner(self, board):
         player1_count = self.black_count(board)
         player2_count = self.white_count(board)
@@ -273,18 +294,23 @@ class O2(BaseGame):
             return 2
         else:
             return 0
-
+    #Checks if the game has ended.
     def end_game(self, board, player):
         if self.valid_moves(board, player) == [] and self.valid_moves(board, 3 - player) == []:
             return True
         return False
     
+    #Main method to run the game loop, logics and display graphics using pygame.
     def play(self):
         self.board = self.generate_board()
-        
         pygame.init()
-        self.screen1 = pygame.display.set_mode((600, 600))
+        self.screen1 = pygame.display.set_mode((1100, 800))
         self.draw_initial_screen()
+        Bcoin_img = pygame.image.load("games/gamelogos/black_coin.jpeg").convert_alpha()
+        Bcoin_img = pygame.transform.smoothscale(Bcoin_img, (60, 60))
+        Wcoin_img = pygame.image.load("games/gamelogos/white_coin.jpeg").convert_alpha()
+        Wcoin_img = pygame.transform.smoothscale(Wcoin_img, (60, 60))
+        title_font = pygame.font.SysFont("timesnewroman", 48, bold=True)
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -292,7 +318,8 @@ class O2(BaseGame):
                     return
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mx, my = pygame.mouse.get_pos()
-                    r, c = my // 75, mx // 75
+                    r, c = (my - self.H2) // 75, (mx - self.W2) // 75
+                    #If move made is valid change the board accordingly and terminates when game ends.
                     if self.valid_moves(self.board, self.current_player) != []:
                         if self.is_valid_move(self.board, r, c, self.current_player) != 'f':
                             self.board = self.updated_board_after_move(self.board, r, c, self.current_player)
@@ -310,6 +337,7 @@ class O2(BaseGame):
                                 else:
                                     self.current_player_name = "Player 2"
 
+                    #If the current player has no valid moves, switch to the other player and check if the game has ended.
                     elif self.valid_moves(self.board, self.current_player) == []:
                         self.current_player = 3 - self.current_player
                         if self.current_player == 1:
@@ -321,15 +349,25 @@ class O2(BaseGame):
                             self.winner = self.check_the_winner(self.board)
                             screen1 = pygame.display.set_mode((800, 600))   
                             return
-                        
-
 
             self.draw_screen_after_updated_board(self.board)
+            title = title_font.render(f"Player {self.current_player}'s Turn", True, (0, 0, 0))
+            title1 = title_font.render(f"Player1", True, (0, 0, 0))
+            title2 = title_font.render(f"Player2", True, (0, 0, 0))
+            title3 = title_font.render(f": {self.black_count(self.board)}", True, (0, 0, 0))
+            title4 = title_font.render(f": {self.white_count(self.board)}", True, (0, 0, 0))
+            self.screen1.blit(Bcoin_img, (self.W2 + 9*75 + 20, self.H2 + 2*75))
+            self.screen1.blit(Wcoin_img, (self.W2 + 9*75 + 20, self.H2 + 5*75))
+            self.screen1.blit(title, (200, 50))
+            self.screen1.blit(title1, (self.W2 + 9*75 + 20, self.H2 + 1*75))
+            self.screen1.blit(title2, (self.W2 + 9*75 + 20, self.H2 + 4*75))
+            self.screen1.blit(title3, (self.W2 + 9*75 + 90, self.H2 + 2*75 + 5))
+            self.screen1.blit(title4, (self.W2 + 9*75 + 90, self.H2 + 5*75 + 5))
             self.draw_valid_moves_positions(self.board, self.current_player)
             mx, my = pygame.mouse.get_pos()
+            #Highlight the valid moves positions when the mouse hovers over them.
             if self.valid_moves(self.board, self.current_player) != []:
                 if self.is_valid_move(self.board, my // 75, mx // 75, self.current_player) != 'f':
-                    rect = pygame.Rect((mx // 75)*75, (my // 75)*75, 75, 75)
+                    rect = pygame.Rect((mx // 75 - self.W2 // 75)*75, (my // 75 - self.H2 // 75)*75, 75, 75)
                     pygame.draw.circle(self.screen1, (5, 5, 5), rect.center, 29, 3)
             pygame.display.update()
-            

@@ -1,3 +1,5 @@
+#Base class for all games to inherit from. Contains common attributes and methods for game management.
+
 class BaseGame:
     def __init__(self, usrname1, usrname2, gameclass):
         self.player1 = usrname1

@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # Sorting option provided by user (wins, losses, or win/loss_ratio)
 sort_by=$1 
 if [ "$sort_by" == "wins" ]; then # Sortvalue for wins
@@ -14,7 +14,8 @@ fi
 # This awk command processes history.csv file and calculates wins, losses, and win/loss ratio for each user and game combination.
 # win/loss ratio is written upto 2 decimal places.
 awk -F "," '
- {  gsub(/\r/, "", $0) # Remove carriage return characters
+   {
+    gsub(/\r/, "", $0) 
     user_game_data = $1 "," $4
     wins[user_game_data]++ 
     user_game_data = $2 "," $4
@@ -46,6 +47,6 @@ awk -F "," '
         }
     }' history.csv > leaderboard.csv
 # leaderboard.csv file contains the data without sorting.
-# The following command sorts the leaderboard.csv file based on the user's choice and displays it in a formatted table.
+# The following command sorts the leaderboard.csv file based on the user's choice, displays it in a formatted table and highlights the header row in blue color.
 (head -n 1 leaderboard.csv && tail -n +2 leaderboard.csv | sort -t "," -k$sort_value,$sort_value -nr) | column -t -s "," | awk 'NR==1 {print "\033[36m" $0 "\033[0m"} NR>1 {print $0}'
 rm leaderboard.csv 

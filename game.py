@@ -1,4 +1,9 @@
-
+"""
+This file contains the program for main home page, menu page and winner display of the game hub.
+It also contains the code for displaying the winner and the statistics of the game after each game is played.
+Uses the history.csv file to store the results of each game played and uses it to display the statistics of the game.
+Uses matplotlib and leaderboard.sh to display the statistics of all games in a bar graph, pie chart and in terminal.
+"""
 import matplotlib.pyplot as plt
 import pygame
 import numpy as np
@@ -10,6 +15,8 @@ from base import BaseGame
 from games import tictactoe
 from games import connect4
 from games import othello
+
+#Initialize Pygame, set up the main window and introduce all variables and constants required for game hub
 
 pygame.init()
 W, H = 800, 600
@@ -46,19 +53,19 @@ MENU = 1
 GAME1_OVERVIEW = 2
 GAME2_OVERVIEW = 3
 GAME3_OVERVIEW = 4
-GAME1_PLAYAGAIN = 5
-GAME2_PLAYAGAIN = 6
-GAME3_PLAYAGAIN = 7
 
 current_screen = HOME
 
+#Function to append the results of each game in history.csv file in the format winner,loser,date,game played.
 def append_results(game_cap, game):
     with open('history.csv', 'a', newline='') as file:
         writer = csv.writer(file)
-        if (game_cap.winner == 1) | (game_cap.winner == "Player 1 Wins!"):
+        if (game_cap.winner == 1):
             writer.writerow([sys.argv[1],sys.argv[2],dt.now().strftime("%d-%m-%Y"),game])
-        elif (game_cap.winner == 2) | (game_cap.winner == "Player 2 Wins!"):
+        elif (game_cap.winner == 2):
             writer.writerow([sys.argv[2],sys.argv[1],dt.now().strftime("%d-%m-%Y"),game])
+
+#Functions to draw buttons on the screen and return the rectangle of the button to check for clicks on it.
 
 def draw_button(text, x, y, w, h):
     rect= pygame.Rect(x, y, w, h)
@@ -74,6 +81,8 @@ def draw_another_button(text, x, y, w, h):
     screen.blit(button_title, (x + w // 2 - button_title.get_width() // 2, y + 10))
     return rect
 
+
+#Several variables to store the rectangles of buttons and game icons to check for clicks on them in the main loop.
 enter_btn = pygame.Rect(0,0,0,0)
 game1_rect = pygame.Rect(0,0,0,0)
 game2_rect = pygame.Rect(0,0,0,0)
@@ -81,20 +90,26 @@ game3_rect = pygame.Rect(0,0,0,0)
 
 clock = pygame.time.Clock()
 running = True
+#Main loop to display the home page, menu page and winner display page and their functionalities.
 while running:
     clock.tick(60)
     for event in pygame.event.get():
 
+        #Event for quitting the entire game hub.
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
 
+        #Event for mouse click to check for clicks on buttons and game icons and perform the required actions.
         if event.type == pygame.MOUSEBUTTONDOWN:
             mx, my =pygame.mouse.get_pos()
             if current_screen == HOME:
                 if enter_btn.collidepoint(mx, my):
                     current_screen = MENU
+
             elif current_screen == MENU:
+
+                #Opens Tic Tac Toe on clicking and appends the results in history.csv file after the game is over.
                 if game1_rect.collidepoint(mx, my):
                     gameT = tictactoe.T3("Player 1", "Player 2")
                     pygame.draw.rect(screen, (255, 255, 0), game1_rect, 3)
@@ -102,6 +117,8 @@ while running:
                     winnr = gameT.winner
                     append_results(gameT, "tictactoe")
                     current_screen = GAME1_OVERVIEW
+
+                #Opens Othello on clicking and appends the results in history.csv file after the game is over.
                 elif game2_rect.collidepoint(mx, my):
                     gameO = othello.O2("Player 1", "Player 2")
                     pygame.draw.rect(screen, (255, 255, 0), game2_rect, 3)
@@ -109,6 +126,8 @@ while running:
                     winnr = gameO.winner
                     append_results(gameO, "othello")
                     current_screen = GAME2_OVERVIEW
+
+                #Opens Connect 4 on clicking and appends the results in history.csv file after the game is over.
                 elif game3_rect.collidepoint(mx, my):
                     gameC = connect4.C4("Player 1", "Player 2")
                     pygame.draw.rect(screen, (255, 255, 0), game3_rect, 3)
@@ -116,6 +135,9 @@ while running:
                     winnr = gameC.winner
                     append_results(gameC, "connect4")
                     current_screen = GAME3_OVERVIEW
+
+            #Opens the statistics of the game in terminal ,bar graph and pie chart on clicking the buttons.
+            #subprocess used for opening leaderboard.sh and show_plots.py files.
             elif current_screen in [GAME1_OVERVIEW, GAME2_OVERVIEW, GAME3_OVERVIEW]:
                 if sort_by_wins_btn.collidepoint(mx, my):
                     subprocess.run(["bash", "leaderboard.sh", "wins"])
@@ -132,6 +154,7 @@ while running:
                     pygame.quit()
                     sys.exit()
 
+    #Home page interface.
     if current_screen == HOME:
         
         screen.blit(bg_home, (0, 0))
@@ -141,6 +164,7 @@ while running:
         if enter_btn.collidepoint(pygame.mouse.get_pos()):
             pygame.draw.rect(screen, (0, 0, 0), enter_btn, 3)
 
+    #Menu page interface with game icons and buttons to select the games.
     elif current_screen == MENU:
         
         screen.blit(bg_menu, (0, 0))
@@ -152,12 +176,16 @@ while running:
         screen.blit(small_font.render("Tic Tac Toe", True, (255,255,255)), (146, 430))
         screen.blit(small_font.render("Othello", True, (255,255,255)), (365, 430))
         screen.blit(small_font.render("Connect 4", True, (255,255,255)), (560, 430))
+
+        #Highlight the game icons on mouse hover.
         if game1_rect.collidepoint(pygame.mouse.get_pos()):
             pygame.draw.rect(screen, (25, 25, 20), game1_rect, 3)
         elif game2_rect.collidepoint(pygame.mouse.get_pos()):
             pygame.draw.rect(screen, (25, 25, 20), game2_rect, 3)
         elif game3_rect.collidepoint(pygame.mouse.get_pos()):
             pygame.draw.rect(screen, (25, 25, 20), game3_rect, 3)
+
+    #Each game overview page interface to display the winner and buttons to view statistics, play again or exit.
 
     elif current_screen == GAME1_OVERVIEW:
         screen.blit(winner_bgpage, (0, 0))
@@ -172,13 +200,15 @@ while running:
         screen.blit(result_label, (W//2 - result_label.get_width()//2, 80))
         statistics_title = another_font.render("View statistics", True, (255, 255, 255))
         screen.blit(statistics_title, (W//2 - statistics_title.get_width()//2, 180))
-    
+
+        #All buttons to view statistics, play again and exit on the game overview page.
         sort_by_wins_btn = draw_button("Sort by Wins", W//2 - 100, 250, 200, 50)
         sort_by_losses_btn = draw_button("Sort by Losses", W//2 - 100, 310, 200, 50)
         sort_by_ratio_btn = draw_another_button("Sort by Win/Loss Ratio", W//2 - 125, 370, 250, 50)
         playagain_btn = draw_button("Return to menu", W//2 - 140, 450, 280, 55)
         exit_btn = draw_button("Exit", W//2 - 140, 520, 280, 55)
 
+        #Highlight the buttons on mouse hover.
         if sort_by_wins_btn.collidepoint(pygame.mouse.get_pos()):
             pygame.draw.rect(screen, (0, 0, 0), sort_by_wins_btn, 3)
         if sort_by_losses_btn.collidepoint(pygame.mouse.get_pos()):
@@ -200,6 +230,7 @@ while running:
             result_text = "It's a Draw!"
         result_label = title_font.render(result_text, True, (255, 255, 255))
         
+        #All buttons to view statistics, play again and exit on the game overview page.
         screen.blit(result_label, (W//2 - result_label.get_width()//2, 80))
         statistics_title = another_font.render("View statistics", True, (255, 255, 255))
         screen.blit(statistics_title, (W//2 - statistics_title.get_width()//2, 180))
@@ -209,6 +240,7 @@ while running:
         playagain_btn = draw_button("Return to menu", W//2 - 140, 450, 280, 55)
         exit_btn = draw_button("Exit", W//2 - 140, 520, 280, 55)
 
+        #Highlight the buttons on mouse hover.
         if sort_by_wins_btn.collidepoint(pygame.mouse.get_pos()):
             pygame.draw.rect(screen, (0, 0, 0), sort_by_wins_btn, 3)
         if sort_by_losses_btn.collidepoint(pygame.mouse.get_pos()):
@@ -220,9 +252,6 @@ while running:
         if exit_btn.collidepoint(pygame.mouse.get_pos()):
             pygame.draw.rect(screen, (0, 0, 0), exit_btn, 3)   
 
-
-
-    
     elif current_screen == GAME3_OVERVIEW:
         screen.blit(winner_bgpage, (0, 0))
         if winnr == 1:
@@ -232,7 +261,8 @@ while running:
         else:
             result_text = "It's a Draw!"
         result_label = title_font.render(result_text, True, (255, 255, 255))
-        
+
+        #All buttons to view statistics, play again and exit on the game overview page.        
         screen.blit(result_label, (W//2 - result_label.get_width()//2, 80))
         statistics_title = another_font.render("View statistics", True, (255, 255, 255))
         screen.blit(statistics_title, (W//2 - statistics_title.get_width()//2, 180))
@@ -242,6 +272,7 @@ while running:
         playagain_btn = draw_button("Return to menu", W//2 - 140, 450, 280, 55)
         exit_btn = draw_button("Exit", W//2 - 140, 520, 280, 55)
 
+        #Highlight the buttons on mouse hover.
         if sort_by_wins_btn.collidepoint(pygame.mouse.get_pos()):
             pygame.draw.rect(screen, (0, 0, 0), sort_by_wins_btn, 3)
         if sort_by_losses_btn.collidepoint(pygame.mouse.get_pos()):
@@ -253,7 +284,6 @@ while running:
         if exit_btn.collidepoint(pygame.mouse.get_pos()):
             pygame.draw.rect(screen, (0, 0, 0), exit_btn, 3)   
 
-
+    #Update the display after drawing all elements on the screen.
     pygame.display.update()
 
-    
