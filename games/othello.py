@@ -365,9 +365,14 @@ class O2(BaseGame):
             self.screen1.blit(title4, (self.W2 + 9*75 + 90, self.H2 + 5*75 + 5))
             self.draw_valid_moves_positions(self.board, self.current_player)
             mx, my = pygame.mouse.get_pos()
+            r = (my - self.H2) // 75
+            c = (mx - self.W2) // 75
+            cell_x = c * 75 + self.W2
+            cell_y = r * 75 + self.H2
             #Highlight the valid moves positions when the mouse hovers over them.
             if self.valid_moves(self.board, self.current_player) != []:
-                if self.is_valid_move(self.board, my // 75, mx // 75, self.current_player) != 'f':
-                    rect = pygame.Rect((mx // 75 - self.W2 // 75)*75, (my // 75 - self.H2 // 75)*75, 75, 75)
-                    pygame.draw.circle(self.screen1, (5, 5, 5), rect.center, 29, 3)
+                if self.is_valid_move(self.board, (my - self.H2)//75, (mx - self.W2)//75, self.current_player) != 'f':
+                    rect = pygame.Rect(cell_x, cell_y, 75, 75)
+                    #if rect.collidepoint(mx, my):
+                    pygame.draw.circle(self.screen1, (5, 5, 5), rect.center, 30, 3)
             pygame.display.update()
