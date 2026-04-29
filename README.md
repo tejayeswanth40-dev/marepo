@@ -41,7 +41,7 @@ Open this repository in your local device and
 - This will create report.pdf
 - To delete all created additional files created during the compilation of report.tex run "make cleantemp"
 - To delete all the files includig report.pdf created during the compilation of report.tex run "make clean"
--    
+   
 ### Tic-Tac-Toe Instructions
 - The game is played on a 10×10 grid.
 - Two players take turns:
