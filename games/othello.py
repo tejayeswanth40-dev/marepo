@@ -255,7 +255,8 @@ class O2(BaseGame):
         possible_valid_moves = self.valid_moves(board, player)
         for r, c in possible_valid_moves:
             rect = pygame.Rect(c*75, r*75, 75, 75)
-            pygame.draw.circle(self.screen1, (120, 0, 140), rect.center, 29 ,2)
+            pygame.draw.circle(self.screen1, (40, 10, 50), rect.center, 28 ,2)
+        
 
     def black_count(self, board):
         return np.sum(board == 1)
@@ -267,11 +268,11 @@ class O2(BaseGame):
         player1_count = self.black_count(board)
         player2_count = self.white_count(board)
         if player1_count > player2_count:
-            return "Player 1 Wins!"
+            return 1
         elif player2_count > player1_count:
-            return "Player 2 Wins!"
+            return 2
         else:
-            return "It's a tie!"
+            return 0
 
     def end_game(self, board, player):
         if self.valid_moves(board, player) == [] and self.valid_moves(board, 3 - player) == []:
@@ -300,6 +301,7 @@ class O2(BaseGame):
                             if self.end_game(self.board, self.current_player):
                                 self.game_over = True
                                 self.winner = self.check_the_winner(self.board)
+                                screen1 = pygame.display.set_mode((800, 600))
                                 return
                             else:
                                 self.current_player = 3 - self.current_player
@@ -317,10 +319,17 @@ class O2(BaseGame):
                         if self.end_game(self.board, self.current_player):
                             self.game_over = True
                             self.winner = self.check_the_winner(self.board)
+                            screen1 = pygame.display.set_mode((800, 600))   
                             return
                         
 
 
             self.draw_screen_after_updated_board(self.board)
             self.draw_valid_moves_positions(self.board, self.current_player)
+            mx, my = pygame.mouse.get_pos()
+            if self.valid_moves(self.board, self.current_player) != []:
+                if self.is_valid_move(self.board, my // 75, mx // 75, self.current_player) != 'f':
+                    rect = pygame.Rect((mx // 75)*75, (my // 75)*75, 75, 75)
+                    pygame.draw.circle(self.screen1, (5, 5, 5), rect.center, 29, 3)
             pygame.display.update()
+            

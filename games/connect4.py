@@ -73,7 +73,7 @@ class C4(BaseGame):
                 if self.board[y, x] == 1:
                     pygame.draw.circle(self.screen3, (255, 255, 0), circl.center, 3/8 * self.side_length)
                 elif self.board[y, x] == 2:
-                    pygame.draw.circle(self.screen3 , (255, 0, 0), circl.center, 3/8 * self.side_length)
+                    pygame.draw.circle(self.screen3 , (255, 0, 0), circl.center, 3/8 * self.side_length)                    
     def play(self):
         pygame.init()
         self.initialize_board()
