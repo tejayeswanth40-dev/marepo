@@ -1,0 +1,116 @@
+\documentclass[12pt]{article}
+
+\usepackage{hyperref} 
+
+\title{Project Report}
+\author{Teja Yeswanth.S and Sai Rishanth Reddy.S}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{External Libraries Used}
+\label{sec:libraries}
+
+No external libraries were used in this project, only allowed modules were used.
+
+
+\section{Implemented Features}
+\label{sec:features}
+
+Some features apart from the ones which were asked are added, these include: 
+
+\begin{itemize}
+  \item Player can exit the login or registration process anytime in the terminal
+  \item The placeholder of the coin gets highlighted when the player hovers over it in Othello
+  \item Player's turn is displayed on the screen
+  \item The coin assigned to each player is displayed on the screen
+  \item Number of coins each player has is displayed on the screen in Othello
+  \item Icons in the game menu gets highlighted when the player hovers over it
+  \item Designed background images for each game and the game menu with suitable colour combinations
+\end{itemize}
+
+\newpage
+\section{Code Logic}
+\label{sec:logic}
+
+\subsection{Generic Class}
+\label{sec:generic}
+
+The base class has all the required variables defined.
+
+
+\subsubsection{Tic Tac Toe}
+\label{sec:t3}
+
+10x10 grid with 5-in-a-row win condition.
+'xxxxx' in <string> gives true or false this is used to check for win condition.To avoid using loops we checked only at the position where the player has just played.
+A function is defined to draw X shape.
+
+\subsubsection{Connect 4}
+\label{sec:c4}
+
+7x7 grid with 4-in-a-row win condition.
+Same logic as tictactoe is used to check for win condition.
+Tictactoe is similar to connect4 in most of the code.
+
+\subsubsection{Othello}
+\label{sec:o2}
+
+Each direction is checked for validity of move and then the coins co-ordinates are stored in a numpy array and then the coins are flipped by looking at the array. The isvalidmove function returns a string representing the direction in which the coins are to be flippped, which was later used in updateboardaftermove function to update the numpy board.
+The winner is decided by counting the number of coins, which is done using np.sum(board == player) for each player and comparing the counts.
+Valid moves possible for the current player are drawn using drawvalidmovespositions function, which gets the gets a list of co-ordinates of valid moves from validmoves function.
+
+\subsection{Authentication System}
+\label{sec:auth}
+
+All authentication is taken care of by main.sh, when a username is entered it checks if the username exists in the users.tsv, if it does then it prompts for password and checks if the password is correct, if the username doesn't exist then it prompts for registration and adds the username and password to the users.tsv file.
+After certain entries there will be an option to stop the process running in the terminal by taking 'x' as input.
+
+\subsection{Leaderboard}
+\label{sec:leaderboard}
+
+The file leaderboard.sh takes the arguments from the graphical interface of winner display page after the game ends. It takes this element as a value to sort the data from the history.csv file. It reads the data and the winner-loser content from the history.csv file and by using the awk command it analyses and calculates the wins of losses of each player in each game by reading each line of history.csv. It then sorts this analysed data with respect to the value taken as argument i.e wins ,losses or win/loss ratio and displays the sorted data in the terminal with the header line being highlighted.This file is called after every game ends.
+
+
+
+\section{Hurdles Faced and Solutions}
+\label{sec:hurdles}
+
+\begin{itemize}
+  \item Designing the UI using pygame was a bit difficult, but we overcame it by looking at various designs and implementing the one which we liked the most.
+  \item Implementing the logic for Othello was a bit tricky, but we overcame it by breaking down the problem into smaller parts and solving each part separately.
+  \item We faced a problem with circular imports in BaseGame class which was originally in game.py, we solved it by keeping the BaseGame class in base.py and importing it in the game files.
+  \item After the end of each game, the data appended in the history.csv file has carriage values but we overcame it by using gsub command in the leaderboard.sh to remove the carriage values.
+\end{itemize}
+
+\newpage
+\section{Future Improvements}
+\label{sec:future}
+
+As discussed in Section \ref{sec:logic},if we had 10 hrs more time improvements we would consider are :
+
+\begin{itemize}
+  \item More games
+  \item Better UI with hover effects in all games
+  \item Animation in connect4 (falling coins) and in tictactoe (drawing X and O and striking off the winning line)
+  \item Tie conditions in all games and it's stats in the leaderboard
+  \item Background music and sound effects for each game
+\end{itemize}
+
+\newpage
+\section{Bibliography}
+\label{sec:bib}
+
+\begin{itemize}
+  \item pygame documentation: \url{https://pyga.me/docs/}
+  \item numpy documentation: \url{https://numpy.org/doc/2.4/index.html}
+  \item Python documentation: \url{https://docs.python.org/3/}
+  \item Matplotlib: \url{https://matplotlib.org/stable/index.html}
+\end{itemize}
+
+\end{document}
